@@ -2,7 +2,8 @@ import React from 'react';
 import './app.css';
 import Countries from 'countries-api';
 import CountryCard from './components/country';
-import Pagination from './components/pagination';
+//import Pagination from './components/pagination';
+import Paginator from './components/paginate';
 
 class App extends React.Component {
   constructor(props) {
@@ -38,13 +39,9 @@ class App extends React.Component {
     const totalCountries = allCountries.length;
 
     if (totalCountries === 0) return null;
-
-    const headerClass = [
-      'text-dark py-2 pr-4 m-0',
-      currentPage ? 'border-gray border-right' : '',
-    ]
-      .join(' ')
-      .trim();
+    const border = currentPage ? 'border-gray border-right' : '';
+    const headers = ['text-dark py-2 pr-4 m-0', border];
+    const headerClass = headers.join(' ').trim();
     return (
       <div className="App">
         <div className="container mb-5">
@@ -63,10 +60,10 @@ class App extends React.Component {
                 )}
               </div>
               <div className="d-flex flex-row py-4 align-items-center">
-                <Pagination
+                <Paginator
                   records={totalCountries}
                   limit={18}
-                  nextPages={1}
+                  //nextPages={1}
                   onPageChanged={this.onPageChanged}
                 />
               </div>

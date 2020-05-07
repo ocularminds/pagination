@@ -1,4 +1,4 @@
-# pagination
+# Paginator
 React custom component to paginate large dataset
 
 ## Available Scripts

@@ -1,7 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const LEFT_PAGE = 'LEFT';
 const RIGHT_PAGE = 'RIGHT';
+const HASH = "#";
 
 /**
  * Helper method for creating a range of numbers
@@ -20,48 +23,50 @@ const range = (from, to, step = 1) => {
 };
 
 class Pagination extends React.Component {
-  construction(props) {
+  constructor(props) {
     super(props);
     const {records = 0, limit = 10, nextPages = 0} = props;
     this.limit = typeof limit === 'number' ? limit : 10;
     this.records = typeof records === 'number' ? records : 0;
     //next pages can be 0, 1, or 2
-    this.nextPages =
-      typeof nextPages === 'number' ? Math.max(0, Math.min(nextPages, 2)) : 0;
+    this.nextPages = typeof nextPages === 'number' ? Math.max(0, Math.min(nextPages, 2)) : 0;
     this.totalPages = Math.ceil(this.records / this.limit);
     this.state = {currentPage: 1};
     this.handleClick = this.handleClick.bind(this);
+    this.handleNext = this.handleNext.bind(this);
+    this.handlePrevious = this.handlePrevious.bind(this);
+    this.getPage = this.getPage.bind(this);
   }
 
   componentDidMount() {
-    getPage(1);
+    this.getPage(1);
   }
 
-  getPage(page){
-    const {onPageChanged = f => f } = this.props;
-    const currentPage = Math.max(0, Math.min(0,this.totalPages));
+  getPage(page) {
+    const {onPageChanged = (f) => f} = this.props;
+    const currentPage = Math.max(0, Math.min(page, this.totalPages));
     const data = {
-      currentPage, 
+      currentPage,
       totalPages: this.totalPages,
       limit: this.limit,
-      records = this.records
+      records: this.records,
     };
-    this.setState({currentPage}, ()=> onPageChanged(data))
+    this.setState({currentPage}, () => onPageChanged(data));
   }
 
   handleClick(page, event) {
     event.preventDefault();
-    getPage(page);
+    this.getPage(page);
   }
 
-  handleNext(e) {
-    e.preventDefault();
-    this.getPage(this.currentPage + (this.nextPages * 2) + 1);
+  handleNext(event) {
+    event.preventDefault();
+    this.getPage(this.currentPage + this.nextPages * 2 + 1);
   }
 
-  handlePrevious(e) {
-    e.preventDefault();
-    this.getPage(this.state.currentPage - (this.nextPages * 2) - 1);
+  handlePrevious(event) {
+    event.preventDefault();
+    this.getPage(this.state.currentPage - this.nextPages * 2 - 1);
   }
 
   /**
@@ -131,65 +136,62 @@ class Pagination extends React.Component {
 
   render() {
     if (!this.records || this.totalPages === 1) return null;
-
     const {currentPage} = this.state;
     const pages = this.fetchPageNumbers();
 
     return (
-      <Fragment>
-        <nav aria-label="Countries Pagination">
-          <ul className="pagination">
-            {pages.map((page, index) => {
-              if (page === LEFT_PAGE)
-                return (
-                  <li key={index} className="page-item">
-                    <a
-                      className="page-link"
-                      href="#"
-                      aria-label="Previous"
-                      onClick={this.handleMoveLeft}
-                    >
-                      <span aria-hidden="true">&laquo;</span>
-                      <span className="sr-only">Previous</span>
-                    </a>
-                  </li>
-                );
-
-              if (page === RIGHT_PAGE)
-                return (
-                  <li key={index} className="page-item">
-                    <a
-                      className="page-link"
-                      href="#"
-                      aria-label="Next"
-                      onClick={this.handleMoveRight}
-                    >
-                      <span aria-hidden="true">&raquo;</span>
-                      <span className="sr-only">Next</span>
-                    </a>
-                  </li>
-                );
-
+      <nav aria-label="Countries Pagination">
+        <ul className="pagination">
+          {pages.map((page, index) => {
+            if (page === LEFT_PAGE) {
               return (
-                <li
-                  key={index}
-                  className={`page-item${
-                    currentPage === page ? ' active' : ''
-                  }`}
-                >
+                <li key={index} className="page-item">
                   <a
                     className="page-link"
-                    href="#"
-                    onClick={this.handleClick(page)}
+                    href={HASH}
+                    aria-label="Previous"
+                    onClick={(e) => this.handlePrevious(e)}
                   >
-                    {page}
+                    <span aria-hidden="true">&laquo;</span>
+                    <span className="sr-only">Previous</span>
                   </a>
                 </li>
               );
-            })}
-          </ul>
-        </nav>
-      </Fragment>
+            }
+
+            if (page === RIGHT_PAGE) {
+              return (
+                <li key={index} className="page-item">
+                  <a
+                    className="page-link"
+                    href={HASH}
+                    aria-label="Next"
+                    onClick={(e) => this.handleNext(e)}
+                  >
+                    <span aria-hidden="true">&raquo;</span>
+                    <span className="sr-only">Next</span>
+                  </a>
+                </li>
+              );
+            }
+
+            return (
+              <li
+                key={index}
+                className={`page-item${currentPage === page ? ' active' : ''}`}
+              >
+                <a
+                  className="page-link"
+                  href={HASH}
+                  onClick={(e) => this.handleClick(page, e)}
+                >
+                  {page}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
     );
   }
 }

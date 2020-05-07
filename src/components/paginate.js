@@ -20,7 +20,7 @@ const range = (from, to, step = 1) => {
 };
 
 class Paginate extends React.Component {
-  construction(props) {
+  constructor(props) {
     super(props);
     const {records = 0, limit = 10} = props;
     this.limit = typeof limit === 'number' ? limit : 10;

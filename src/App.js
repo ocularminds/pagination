@@ -1,16 +1,16 @@
 import React from 'react';
-import logo from './logo.svg';
 import './app.css';
 import Countries from 'countries-api';
 import CountryCard from './components/country';
 import Pagination from './components/pagination';
 
 class App extends React.Component {
-  constructor() {
+  constructor(props) {
+    super(props);
     this.state = {
       allCountries: [],
       currentCountries: [],
-      currentPage: null,
+      currentPage: 1,
       totalPages: null,
     };
     this.onPageChanged = this.onPageChanged.bind(this);
@@ -38,20 +38,15 @@ class App extends React.Component {
     const totalCountries = allCountries.length;
 
     if (totalCountries === 0) return null;
+
+    const headerClass = [
+      'text-dark py-2 pr-4 m-0',
+      currentPage ? 'border-gray border-right' : '',
+    ]
+      .join(' ')
+      .trim();
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Custom react components: CountryCard and Pagination
-            <br />
-            CountryCard: For display country names and flags.
-            <br />
-            Pagination: For paginating large data set for display.
-          </p>
-        </header>
-        const headerClass = ['text-dark py-2 pr-4 m-0', currentPage ?
-        'border-gray border-right' : ''].join(' ').trim(); return (
         <div className="container mb-5">
           <div className="row d-flex flex-row py-5">
             <div className="w-100 px-4 py-5 d-flex flex-row flex-wrap align-items-center justify-content-between">
@@ -69,20 +64,18 @@ class App extends React.Component {
               </div>
               <div className="d-flex flex-row py-4 align-items-center">
                 <Pagination
-                  totalRecords={totalCountries}
+                  records={totalCountries}
                   limit={18}
                   nextPages={1}
                   onPageChanged={this.onPageChanged}
                 />
               </div>
             </div>
-
             {currentCountries.map((country) => (
               <CountryCard key={country.cca3} country={country} />
             ))}
           </div>
         </div>
-        );
       </div>
     );
   }

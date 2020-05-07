@@ -1,6 +1,7 @@
 import React from 'react';
 import Flag from 'react-flags';
 import PropTypes from 'prop-types';
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const CountryDisplay = (props) => {
   const {cca2: code2 = '', region = null, name = {}} = props.country || {};
@@ -12,7 +13,7 @@ const CountryDisplay = (props) => {
             country={code2}
             format="png"
             pngSize={64}
-            basePath="./img/flags"
+            basePath="img/flags"
             className="d-block h-100"
           />
         </div>
